@@ -6,7 +6,18 @@ function App() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo')
   const messagesEndRef = useRef(null)
+
+  const models = [
+    { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', description: 'Fast and efficient' },
+    { id: 'gpt-4', name: 'GPT-4', description: 'Most capable' },
+    { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', description: 'Enhanced GPT-4' },
+    { id: 'gpt-4o', name: 'GPT-4o', description: 'Latest multimodal' },
+    { id: 'gpt-4o-mini', name: 'GPT-4o Mini', description: 'Affordable & fast' },
+    { id: 'o1-preview', name: 'o1 Preview', description: 'Advanced reasoning' },
+    { id: 'o1-mini', name: 'o1 Mini', description: 'Fast reasoning' },
+  ]
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -32,7 +43,7 @@ function App() {
       })
 
       const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: selectedModel,
         messages: [...messages, userMessage],
       })
 
@@ -56,8 +67,27 @@ function App() {
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h1>ChatGPT Clone</h1>
-        <p>Powered by OpenAI API</p>
+        <div className="header-content">
+          <div className="header-title">
+            <h1>ChatGPT Clone</h1>
+            <p>Powered by OpenAI API</p>
+          </div>
+          <div className="model-selector">
+            <label htmlFor="model-select">Model:</label>
+            <select
+              id="model-select"
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              disabled={loading}
+            >
+              {models.map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name} - {model.description}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="messages-container">
